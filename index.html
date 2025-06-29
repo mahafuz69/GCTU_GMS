@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCTU Grade Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">GCTU</div>
+            <div class="header-text">
+                <h1>Ghana Communication Technology University</h1>
+                <p>Student Grade Management System</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <h2 style="color: #003366; margin-bottom: 2rem;">Welcome to GCTU Grade System</h2>
+        
+        <!-- Login Tabs -->
+        <div class="login-tabs">
+            <button class="tab-btn active" onclick="switchTab('admin')">Admin Login</button>
+            <button class="tab-btn" onclick="switchTab('student')">Student Login</button>
+        </div>
+
+        <!-- Admin Login Form -->
+        <div class="tab-content active" id="admin-tab">
+            <form onsubmit="adminLogin(event)">
+                <div class="form-group">
+                    <label>Admin Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login as Admin</button>
+            </form>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">Demo password: admin123</p>
+        </div>
+
+        <!-- Student Login Form -->
+        <div class="tab-content" id="student-tab">
+            <form onsubmit="studentLogin(event)">
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Index Number</label>
+                    <input type="text" id="studentIndex" placeholder="Enter your index number" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login as Student</button>
+            </form>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">Demo: John Doe / GCTU2023001</p>
+        </div>
+
+        <div id="loginAlert"></div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="container">
+        <div class="dashboard" id="adminDashboard">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Admin Dashboard</h2>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCourses">8</div>
+                    <div class="stat-label">Active Courses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgGPA">3.2</div>
+                    <div class="stat-label">Average GPA</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalGrades">0</div>
+                    <div class="stat-label">Grades Recorded</div>
+                </div>
+            </div>
+
+            <!-- Add Student Section -->
+            <div class="section">
+                <h3 class="section-title">Add New Student</h3>
+                <form onsubmit="addStudent(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Student Name</label>
+                            <input type="text" id="newStudentName" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Index Number</label>
+                            <input type="text" id="newStudentIndex" placeholder="Index Number" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Program</label>
+                            <select id="newStudentProgram" required>
+                                <option value="">Select Program</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                                <option value="Data Science">Data Science</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Year of Study</label>
+                            <select id="newStudentYear" required>
+                                <option value="">Select Year</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-gold">Add Student</button>
+                </form>
+            </div>
+
+            <!-- All Students Section -->
+            <div class="section">
+                <h3 class="section-title">All Students</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Index Number</th>
+                                <th>Name</th>
+                                <th>Program</th>
+                                <th>Year</th>
+                                <th>GPA</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTable">
+                            <!-- Students will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Dashboard -->
+        <div class="dashboard" id="studentDashboard">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Student Dashboard</h2>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Student Info -->
+            <div class="section">
+                <h3 class="section-title">Personal Information</h3>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p><strong>Name:</strong> <span id="currentStudentName"></span></p>
+                    <p><strong>Index Number:</strong> <span id="currentStudentIndex"></span></p>
+                    <p><strong>Program:</strong> <span id="currentStudentProgram"></span></p>
+                    <p><strong>Year:</strong> <span id="currentStudentYear"></span></p>
+                </div>
+                <div class="gpa-display">
+                    Current GPA: <span id="currentStudentGPA">0.00</span>
+                </div>
+            </div>
+
+            <!-- Personal Grades -->
+            <div class="section">
+                <h3 class="section-title">My Grades</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Credits</th>
+                                <th>Grade</th>
+                                <th>Points</th>
+                                <th>Semester</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentGradesTable">
+                            <!-- Student grades will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Entry Modal -->
+    <div class="modal" id="gradeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Enter Grades for <span id="modalStudentName"></span></h3>
+                <button class="close-btn" onclick="closeModal('gradeModal')">&times;</button>
+            </div>
+            <form onsubmit="saveGrades(event)">
+                <div id="gradeInputs">
+                    <!-- Grade inputs will be generated here -->
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">Save Grades</button>
+                    <button type="button" class="btn" onclick="closeModal('gradeModal')" style="background: #6c757d; color: white;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
